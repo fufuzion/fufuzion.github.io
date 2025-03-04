@@ -193,7 +193,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-03-04 17:16:57" itemprop="dateModified" datetime="2025-03-04T17:16:57+08:00">2025-03-04</time>
+      <time title="修改时间：2025-03-04 17:48:53" itemprop="dateModified" datetime="2025-03-04T17:48:53+08:00">2025-03-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -271,7 +271,7 @@
 <h3><span id="key命名问题">key命名问题</span></h3><p>redis的key应尽量用独特的业务标识缩写用<code>:</code>进行拼接，避免一些存在共性和无意义的字符串，且不宜过长避免占用过多内存，若要用到较长内容作为key时可以考虑使用md5等方式将key统一为较短字符串<br>同一业务内应维护一套统一的命名规范，命名中可以体现出redis的数据结构，方便使用者分辨理解</p>
 <h3><span id="主从redis问题">主从redis问题</span></h3><ul>
 <li><strong>机器系统时间不一致</strong>：<br>主从节点所在集群本地时间不一致就会导致key的过期时间判断出现问题</li>
-<li><strong>脑裂问题</strong>：<br>redis的哨兵机制会导致主从身份的变化，当集群中主节点和哨兵之间的部分网络出现异常（网络不通&#x2F;网络拥塞）时，可能出现脑裂情况，即哨兵认为主节点挂了，开始推举出新主节点，但主节点对外已经服务着，会导致写入数据不一致</li>
+<li><strong>脑裂问题</strong>：<br>redis的哨兵机制会导致主从身份的变化，当集群中主节点和哨兵之间的部分网络出现异常（网络不通&#x2F;网络拥塞）时，可能出现脑裂情况，即哨兵认为主节点挂了，开始推举出新主节点，但旧主节点对外依旧服务着，多个主节点共同运行会导致写入数据一致性出现问题</li>
 </ul>
 
       
