@@ -83,7 +83,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">1</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">1</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">2</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">2</span></a></li>
   </ul>
 </nav>
 
@@ -120,18 +120,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -148,6 +148,114 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fuhongbao.github.io/2025/03/04/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6casbin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="付洪宝Atlas">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="金生迷鹿的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 金生迷鹿的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/03/04/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6casbin/" class="post-title-link" itemprop="url">访问控制casbin</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-03-04 17:56:58 / 修改时间：18:20:48" itemprop="dateCreated datePublished" datetime="2025-03-04T17:56:58+08:00">2025-03-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6/" itemprop="url" rel="index"><span itemprop="name">访问控制</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <!-- toc -->
+
+<ul>
+<li><a href="#%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5">核心概念</a></li>
+<li><a href="#%E5%AE%9A%E4%B9%89%E6%A8%A1%E5%9E%8B%E9%85%8D%E7%BD%AE">定义模型配置</a></li>
+<li><a href="#%E4%BB%A5sql%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BD%9C%E4%B8%BA%E9%80%82%E9%85%8D%E5%99%A8">以sql数据库作为适配器</a></li>
+<li><a href="#%E4%BB%A3%E7%A0%81%E5%BA%94%E7%94%A8">代码应用</a></li>
+</ul>
+<!-- tocstop -->
+
+<p>casbin是一种开源的访问控制框架，设计目标是提供一种简单、灵活且易于扩展的访问控制解决方案，支持多种访问控制模型，下面是基于rbac角色权限控制的方式实现的一套系统实践。<br>官方文档：<code>https://casbin.org/zh/docs/rbac/</code></p>
+<h3><span id="核心概念">核心概念</span></h3><ul>
+<li><strong>模型（Model）</strong>：<br>Casbin 使用一个配置文件（通常是 .conf 格式）来定义访问控制模型。模型文件中定义了各种规则，如用户、角色、资源、权限等之间的关系。例如，在 RBAC 模型中，模型文件会定义角色与用户的关联，以及角色与权限的关联。</li>
+<li><strong>策略（Policy）</strong>：<br>策略是一组具体的访问控制规则，它定义了哪些用户或角色可以对哪些资源执行哪些操作。策略通常以表格的形式存储，可以通过 Casbin 的 API 进行增删改查操作。</li>
+<li><strong>请求（Request）</strong>：<br>在应用程序中，当用户尝试访问某个资源时，会生成一个请求。请求包含了用户信息、操作信息和资源信息。Casbin 根据模型和策略来判断该请求是否被允许。</li>
+<li><strong>适配器（Adapter）</strong>：<br>适配器用于将策略数据存储到不同的数据源中，如内存、文件、数据库等。Casbin 提供了多种适配器。</li>
+</ul>
+<h3><span id="定义模型配置">定义模型配置</span></h3><p>casbin支持使用配置文件的形式定义校验的模型</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[request_definition]</span><br><span class="line">r = sub, obj, act</span><br><span class="line">r2 = sub, obj, act</span><br><span class="line"></span><br><span class="line">[policy_definition]</span><br><span class="line">p = sub, obj, act</span><br><span class="line">p2 = sub, obj, act, eft</span><br><span class="line"></span><br><span class="line">[role_definition]</span><br><span class="line">g = _, _</span><br><span class="line"></span><br><span class="line">[policy_effect]</span><br><span class="line">e = some(where (p.eft == allow))</span><br><span class="line">e2 = !some(where (p.eft == deny))</span><br><span class="line"></span><br><span class="line">[matchers]</span><br><span class="line">m = g(r.sub, p.sub) &amp;&amp; r.obj == p.obj &amp;&amp; r.act == p.act || r.sub == &quot;0&quot;</span><br><span class="line">m2 = g(r2.sub, p2.sub) &amp;&amp; r2.obj == p2.obj &amp;&amp; param_match(r2.act, p2.act)</span><br></pre></td></tr></table></figure>
+<p>上面内容包含几个部分：</p>
+<ul>
+<li><strong>请求定义</strong><br>这部分确定了使用者用什么样的形式进行调用验证。<br><code>r = sub, obj, act</code> 中sub表示请求者，一般为用户，obj表示目标资源，act表示操作行为</li>
+<li><strong>策略定义</strong><br><code>p = sub, obj, act, eft</code> 表示的是策略中包含的对应匹配属性，<code>eft</code>通常表示效果<code>(allow/deny)</code></li>
+<li><strong>角色定义</strong><br><code>g = _, _</code> 表示继承关系，g(r.sub, p.sub)若request是策略policy角色继承链的一部分，也会匹配（_表示角色继承关系的前项和后项，即前项继承后项角色的权限）</li>
+<li><strong>策略效果</strong><br><code>e = some(where (p.eft == allow))</code> 意味着只要有一个策略的效果是 allow，则整个请求通过.<br><code>e2 = !some(where (p.eft == deny))</code>表示如果有一个策略的效果是 deny，则拒绝整个请求。</li>
+<li><strong>匹配器</strong><br>这部分定义了用户传入的数据如何与规则进行匹配，类似检索条件。<br><code>m = g(r.sub, p.sub) &amp;&amp; r.obj == p.obj &amp;&amp; r.act == p.act || r.sub == &quot;0&quot; </code><br>1、 <code>g(r.sub, p.sub)</code> 检查请求中的 sub 是否符合策略中 sub 的角色继承规则。<br>2、 <code>r.obj == p.obj &amp;&amp; r.act == p.act </code> 检查请求中的资源和操作是否与策略中的资源和操作匹配。<br>3、<code>r.sub == &quot;0&quot;</code>表示如果 sub 等于 “0”，无论如何都允许请求通过<br>4、 <code>param_match(r2.act, p2.act) </code> 是针对act 自定义了规则</li>
+</ul>
+<h3><span id="以sql数据库作为适配器">以sql数据库作为适配器</span></h3><p>这里举一个以sql数据库作为适配器存储规则的案例，下面以gorm的结构体来做演示</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> AdminCasbinRule <span class="keyword">struct</span> &#123;</span><br><span class="line">	BaseModel</span><br><span class="line">	PType     <span class="type">string</span>     <span class="string">`gorm:&quot;column:ptype&quot; db:&quot;column:ptype&quot; json:&quot;ptype&quot; form:&quot;ptype&quot;`</span></span><br><span class="line">	V0        <span class="type">string</span>     <span class="string">`gorm:&quot;column:v0&quot; db:&quot;column:v0&quot; json:&quot;v0&quot; form:&quot;v0&quot;`</span></span><br><span class="line">	V1        <span class="type">string</span>     <span class="string">`gorm:&quot;column:v1&quot; db:&quot;column:v1&quot; json:&quot;v1&quot; form:&quot;v1&quot;`</span></span><br><span class="line">	V2        <span class="type">string</span>     <span class="string">`gorm:&quot;column:v2&quot; db:&quot;column:v2&quot; json:&quot;v2&quot; form:&quot;v2&quot;`</span></span><br><span class="line">	V3        <span class="type">string</span>     <span class="string">`gorm:&quot;column:v3&quot; db:&quot;column:v3&quot; json:&quot;v3&quot; form:&quot;v3&quot;`</span></span><br><span class="line">	V4        <span class="type">string</span>     <span class="string">`gorm:&quot;column:v4;default:&#x27;&#x27;&quot; db:&quot;column:v4&quot; json:&quot;v4&quot; form:&quot;v4&quot;`</span></span><br><span class="line">	V5        <span class="type">string</span>     <span class="string">`gorm:&quot;column:v5;default:&#x27;&#x27;&quot; db:&quot;column:v5&quot; json:&quot;v5&quot; form:&quot;v5&quot;`</span></span><br><span class="line">	V6        <span class="type">string</span>     <span class="string">`gorm:&quot;column:v6;default:&#x27;&#x27;&quot; db:&quot;column:v6&quot; json:&quot;v6&quot; form:&quot;v6&quot;`</span></span><br><span class="line">	V7        <span class="type">string</span>     <span class="string">`gorm:&quot;column:v7;default:&#x27;&#x27;&quot; db:&quot;column:v7&quot; json:&quot;v7&quot; form:&quot;v7&quot;`</span></span><br><span class="line">	IsDeleted <span class="type">int64</span>      <span class="string">`gorm:&quot;column:is_deleted;default:0&quot; db:&quot;column:is_deleted&quot; json:&quot;is_deleted&quot; form:&quot;is_deleted&quot;`</span></span><br><span class="line">	DeletedAt *time.Time <span class="string">`gorm:&quot;column:deleted_at&quot; db:&quot;column:deleted_at&quot; json:&quot;deleted_at&quot; form:&quot;deleted_at&quot;`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中<code>ptype</code>为rbac的定义的模型属性，例如 <code>p</code>为策略规则，<code>g</code>可以表示角色继承的规则<br>v0-v7是根据<code>ptype</code>而匹配的规则属性，例如ptype&#x3D;p时，v0&#x3D;sub,v1&#x3D;obj,v2&#x3D;act.    </p>
+<h3><span id="代码应用">代码应用</span></h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">adapter, _ := gormadapter.NewAdapterByDBUseTableName(GormDB, <span class="string">&quot;&quot;</span>, <span class="string">&quot;admin_casbin_rule&quot;</span>)</span><br><span class="line">e, err := casbin.NewEnforcer(<span class="string">&quot;rbac_model.conf&quot;</span>, adapter)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    fmt.Println(err)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line">sub := <span class="string">&quot;role1&quot;</span> <span class="comment">// 角色 </span></span><br><span class="line">obj := <span class="string">&quot;resource1&quot;</span> <span class="comment">// 访问的资源名/访问的接口地址等等</span></span><br><span class="line">act := <span class="string">&quot;read&quot;</span> <span class="comment">// 操作/http method等等</span></span><br><span class="line">ok, err := e.Enforce(sub, obj, act)</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
