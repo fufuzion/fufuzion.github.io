@@ -83,7 +83,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">2</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">2</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">3</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a></li>
   </ul>
 </nav>
 
@@ -120,18 +120,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">3</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -148,6 +148,106 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fuhongbao.github.io/2025/04/10/go%20map%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="付洪宝Atlas">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="金生迷鹿的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 金生迷鹿的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/04/10/go%20map%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" class="post-title-link" itemprop="url">Go map的一些问题记录</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-04-10 09:25:03 / 修改时间：10:47:50" itemprop="dateCreated datePublished" datetime="2025-04-10T09:25:03+08:00">2025-04-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/go/" itemprop="url" rel="index"><span itemprop="name">go</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <!-- toc -->
+
+<ul>
+<li><a href="#%E5%B9%B6%E5%8F%91%E8%AF%BB%E5%86%99panic%E9%97%AE%E9%A2%98">并发读写panic问题</a></li>
+<li><a href="#map%E5%8F%97%E5%88%B0%E6%B5%81%E9%87%8F%E5%86%B2%E5%87%BB%E5%90%8E%E5%86%85%E5%AD%98%E6%9A%B4%E5%A2%9E%E9%97%AE%E9%A2%98">map受到流量冲击后内存暴增问题</a></li>
+<li><a href="#map%E9%94%AE%E7%B1%BB%E5%9E%8B%E4%B8%BA%E6%8C%87%E9%92%88%E9%97%AE%E9%A2%98">map键类型为指针问题</a></li>
+<li><a href="#map%E9%81%8D%E5%8E%86%E8%AF%BB%E5%8F%96%E7%9A%84%E9%9A%8F%E6%9C%BA%E6%80%A7%E5%88%86%E5%B8%83%E5%B9%B6%E4%B8%8D%E5%9D%87%E5%8C%80">map遍历读取的随机性分布并不均匀</a></li>
+</ul>
+<!-- tocstop -->
+
+<h3><span id="并发读写panic问题">并发读写panic问题</span></h3><p>比较基础的go并发问题，map应配合锁或chan等其他机制避免并发读写的碰撞</p>
+<h3><span id="map受到流量冲击后内存暴增问题">map受到流量冲击后内存暴增问题</span></h3><p>很多有时效要求，高并发的场景下会选择将数据缓存到内存的map中，在一些数据动态增删的场景下会出现服务内存使用量走高之后无法下降的情况，其中一种可能的情况是全局map高峰期扩容后，数据虽然delete掉但内存没有释放掉，即map内存泄露<br>常见解决办法为：    </p>
+<ol>
+<li>周期性更新全局map，创建新的map，将旧map有效元素拷贝入新map，新map内都是有效数据，然后将旧map指针指向新map，旧空间等待gc回收</li>
+<li>注意map元素的类型，若单个元素很大，优先使用指针类型进行存储，delete时删除引用关系，元素实际数据也可以后续被gc回收，也能起到实时减少内存的效果</li>
+</ol>
+<h3><span id="map键类型为指针问题">map键类型为指针问题</span></h3><p>map的键类型语法上只要求可以比较是否相等即可，所有指针类型也可以写为key并不会触发语法错误，但是这样会导致代码复杂且不可控应避免这种写法<br>指针作为map的键时可能出现的问题：     </p>
+<ol>
+<li>指针指向的对象发生扩容迁移等内存重新分配时，指针地址可能变化，map键中存储的旧地址值不会改变，将导致在map中无法比较成功</li>
+<li>插入数据时无法比较成功导致内存持续上涨，实际运行场景中因为内存频繁变更，map中会出现大量无法比较成功的悬空key，这些指针本身的空间和引用的对象实体都无法得到释放，除非重建map，内存占用会随着map不断插入数据而不断膨胀</li>
+</ol>
+<h3><span id="map遍历读取的随机性分布并不均匀">map遍历读取的随机性分布并不均匀</span></h3><p>go的map遍历读取元素时顺序是随机的，根本原因是map底层hashmap扩容迁移等操作都会导致顺序不一致，为了保证特性不被误用，go做了随机化处理，即使静态map没有扩容每次遍历的顺序也是随机的，但是这个随机的分布是不保证均匀的，不应该被用做业务里的随机化操作</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
