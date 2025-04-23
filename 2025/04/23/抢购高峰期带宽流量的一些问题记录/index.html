@@ -19,27 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fuhongbao.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.22.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"show_result":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="并发读写panic问题 map受到流量冲击后内存暴增问题 map键类型为指针问题 map遍历读取的随机性分布并不均匀 不常变动的大量级map使用非指针类型加速gc    并发读写panic问题比较基础的go并发问题，map应配合锁或chan等其他机制避免并发读写的碰撞 map受到流量冲击后内存暴增问题很多有时效要求，高并发的场景下会选择将数据缓存到内存的map中，在一些数据动态增删的场景下会">
+    <meta name="description" content="抢购用户数量超出预期，导致微信网关带宽流量超出限制 问题影响 排查方法 解决方案      抢购用户数量超出预期，导致微信网关带宽流量超出限制问题影响记录一次线上流量激增带来的问题，商品热度高于预期，参与抢购的用户数量比以往高了10倍以上，导致微信网关瞬时流量超过5G，部分用户由于请求不通页面异常无法下单      排查方法1、从日志服务alb日志和网关日志中根据请求接口的路由进行分组统计，">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Go map的一些问题记录">
-<meta property="og:url" content="https://fuhongbao.github.io/2025/04/10/go%20map%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:title" content="抢购高峰期带宽流量的一些问题记录">
+<meta property="og:url" content="https://fuhongbao.github.io/2025/04/23/%E6%8A%A2%E8%B4%AD%E9%AB%98%E5%B3%B0%E6%9C%9F%E5%B8%A6%E5%AE%BD%E6%B5%81%E9%87%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/index.html">
 <meta property="og:site_name" content="金生迷鹿的博客">
-<meta property="og:description" content="并发读写panic问题 map受到流量冲击后内存暴增问题 map键类型为指针问题 map遍历读取的随机性分布并不均匀 不常变动的大量级map使用非指针类型加速gc    并发读写panic问题比较基础的go并发问题，map应配合锁或chan等其他机制避免并发读写的碰撞 map受到流量冲击后内存暴增问题很多有时效要求，高并发的场景下会选择将数据缓存到内存的map中，在一些数据动态增删的场景下会">
+<meta property="og:description" content="抢购用户数量超出预期，导致微信网关带宽流量超出限制 问题影响 排查方法 解决方案      抢购用户数量超出预期，导致微信网关带宽流量超出限制问题影响记录一次线上流量激增带来的问题，商品热度高于预期，参与抢购的用户数量比以往高了10倍以上，导致微信网关瞬时流量超过5G，部分用户由于请求不通页面异常无法下单      排查方法1、从日志服务alb日志和网关日志中根据请求接口的路由进行分组统计，">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-04-10T01:25:03.222Z">
-<meta property="article:modified_time" content="2025-04-11T08:14:25.726Z">
+<meta property="article:published_time" content="2025-04-23T09:43:14.138Z">
+<meta property="article:modified_time" content="2025-04-23T10:34:04.171Z">
 <meta property="article:author" content="付洪宝Atlas">
-<meta property="article:tag" content="go">
+<meta property="article:tag" content="高并发">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://fuhongbao.github.io/2025/04/10/go%20map%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">
+<link rel="canonical" href="https://fuhongbao.github.io/2025/04/23/%E6%8A%A2%E8%B4%AD%E9%AB%98%E5%B3%B0%E6%9C%9F%E5%B8%A6%E5%AE%BD%E6%B5%81%E9%87%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://fuhongbao.github.io/2025/04/10/go%20map%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/","path":"2025/04/10/go map的一些问题记录/","title":"Go map的一些问题记录"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://fuhongbao.github.io/2025/04/23/%E6%8A%A2%E8%B4%AD%E9%AB%98%E5%B3%B0%E6%9C%9F%E5%B8%A6%E5%AE%BD%E6%B5%81%E9%87%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/","path":"2025/04/23/抢购高峰期带宽流量的一些问题记录/","title":"抢购高峰期带宽流量的一些问题记录"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Go map的一些问题记录 | 金生迷鹿的博客</title>
+<title>抢购高峰期带宽流量的一些问题记录 | 金生迷鹿的博客</title>
   
 
 
@@ -113,7 +113,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">并发读写panic问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">map受到流量冲击后内存暴增问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">map键类型为指针问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">map遍历读取的随机性分布并不均匀</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">不常变动的大量级map使用非指针类型加速gc</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">抢购用户数量超出预期，导致微信网关带宽流量超出限制</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -164,7 +164,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://fuhongbao.github.io/2025/04/10/go%20map%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">
+    <link itemprop="mainEntityOfPage" href="https://fuhongbao.github.io/2025/04/23/%E6%8A%A2%E8%B4%AD%E9%AB%98%E5%B3%B0%E6%9C%9F%E5%B8%A6%E5%AE%BD%E6%B5%81%E9%87%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -177,12 +177,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Go map的一些问题记录 | 金生迷鹿的博客">
+      <meta itemprop="name" content="抢购高峰期带宽流量的一些问题记录 | 金生迷鹿的博客">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Go map的一些问题记录
+          抢购高峰期带宽流量的一些问题记录
         </h1>
 
         <div class="post-meta-container">
@@ -192,15 +192,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2025-04-10 09:25:03" itemprop="dateCreated datePublished" datetime="2025-04-10T09:25:03+08:00">2025-04-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-04-11 16:14:25" itemprop="dateModified" datetime="2025-04-11T16:14:25+08:00">2025-04-11</time>
+      <time title="创建时间：2025-04-23 17:43:14 / 修改时间：18:34:04" itemprop="dateCreated datePublished" datetime="2025-04-23T17:43:14+08:00">2025-04-23</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -208,7 +202,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/go/" itemprop="url" rel="index"><span itemprop="name">go</span></a>
+          <a href="/categories/%E9%AB%98%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">高并发</span></a>
         </span>
     </span>
 
@@ -224,27 +218,26 @@
     <div class="post-body" itemprop="articleBody"><!-- toc -->
 
 <ul>
-<li><a href="#%E5%B9%B6%E5%8F%91%E8%AF%BB%E5%86%99panic%E9%97%AE%E9%A2%98">并发读写panic问题</a></li>
-<li><a href="#map%E5%8F%97%E5%88%B0%E6%B5%81%E9%87%8F%E5%86%B2%E5%87%BB%E5%90%8E%E5%86%85%E5%AD%98%E6%9A%B4%E5%A2%9E%E9%97%AE%E9%A2%98">map受到流量冲击后内存暴增问题</a></li>
-<li><a href="#map%E9%94%AE%E7%B1%BB%E5%9E%8B%E4%B8%BA%E6%8C%87%E9%92%88%E9%97%AE%E9%A2%98">map键类型为指针问题</a></li>
-<li><a href="#map%E9%81%8D%E5%8E%86%E8%AF%BB%E5%8F%96%E7%9A%84%E9%9A%8F%E6%9C%BA%E6%80%A7%E5%88%86%E5%B8%83%E5%B9%B6%E4%B8%8D%E5%9D%87%E5%8C%80">map遍历读取的随机性分布并不均匀</a></li>
-<li><a href="#%E4%B8%8D%E5%B8%B8%E5%8F%98%E5%8A%A8%E7%9A%84%E5%A4%A7%E9%87%8F%E7%BA%A7map%E4%BD%BF%E7%94%A8%E9%9D%9E%E6%8C%87%E9%92%88%E7%B1%BB%E5%9E%8B%E5%8A%A0%E9%80%9Fgc">不常变动的大量级map使用非指针类型加速gc</a></li>
+<li><a href="#%E6%8A%A2%E8%B4%AD%E7%94%A8%E6%88%B7%E6%95%B0%E9%87%8F%E8%B6%85%E5%87%BA%E9%A2%84%E6%9C%9F%E5%AF%BC%E8%87%B4%E5%BE%AE%E4%BF%A1%E7%BD%91%E5%85%B3%E5%B8%A6%E5%AE%BD%E6%B5%81%E9%87%8F%E8%B6%85%E5%87%BA%E9%99%90%E5%88%B6">抢购用户数量超出预期，导致微信网关带宽流量超出限制</a><ul>
+<li><a href="#%E9%97%AE%E9%A2%98%E5%BD%B1%E5%93%8D">问题影响</a></li>
+<li><a href="#%E6%8E%92%E6%9F%A5%E6%96%B9%E6%B3%95">排查方法</a></li>
+<li><a href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88">解决方案</a></li>
+</ul>
+</li>
 </ul>
 <!-- tocstop -->
 
-<h3><span id="并发读写panic问题">并发读写panic问题</span></h3><p>比较基础的go并发问题，map应配合锁或chan等其他机制避免并发读写的碰撞</p>
-<h3><span id="map受到流量冲击后内存暴增问题">map受到流量冲击后内存暴增问题</span></h3><p>很多有时效要求，高并发的场景下会选择将数据缓存到内存的map中，在一些数据动态增删的场景下会出现服务内存使用量走高之后无法下降的情况，其中一种可能的情况是全局map高峰期扩容后，数据虽然delete掉但内存没有释放掉，即map内存泄露<br>常见解决办法为：    </p>
-<ol>
-<li>周期性更新全局map，创建新的map，将旧map有效元素拷贝入新map，新map内都是有效数据，然后将旧map指针指向新map，旧空间等待gc回收，还能避免频繁删除造成的map overflow链表碎片化问题</li>
-<li>注意map元素的类型，若单个元素很大，优先使用指针类型进行存储，delete时删除引用关系，元素实际数据也可以后续被gc回收，也能起到实时减少内存的效果（注意使用指针会加大gc扫描标记的消耗，得根据实际情况（单struct较大&#x2F;频繁新增删除&#x2F;指针对象不会被其他地方引用）取舍是否要用这种方法）</li>
-</ol>
-<h3><span id="map键类型为指针问题">map键类型为指针问题</span></h3><p>map的键类型语法上只要求可以比较是否相等即可，所有指针类型也可以写为key并不会触发语法错误，但是这样会导致代码复杂且不可控应避免这种写法<br>指针作为map的键时可能出现的问题：     </p>
-<ol>
-<li>指针指向的对象发生扩容迁移等内存重新分配时，指针地址可能变化，map键中存储的旧地址值不会改变，将导致在map中无法比较成功</li>
-<li>插入数据时无法比较成功导致内存持续上涨，实际运行场景中因为内存频繁变更，map中会出现大量无法比较成功的悬空key，这些指针本身的空间和引用的对象实体都无法得到释放，除非重建map，内存占用会随着map不断插入数据而不断膨胀</li>
-</ol>
-<h3><span id="map遍历读取的随机性分布并不均匀">map遍历读取的随机性分布并不均匀</span></h3><p>go的map遍历读取元素时顺序是随机的，根本原因是map底层hashmap扩容迁移等操作都会导致顺序不一致，为了保证特性不被误用，go做了随机化处理，即使静态map没有扩容每次遍历的顺序也是随机的，但是这个随机的分布是不保证均匀的，不应该被用做业务里的随机化操作</p>
-<h3><span id="不常变动的大量级map使用非指针类型加速gc">不常变动的大量级map使用非指针类型加速gc</span></h3><p>大map在程序运行时会影响程序的gc性能，当量级超过千万级别，影响就相当明显，若map的key&#x2F;value类型都是非指针类型，且大小不超过128字节的时候，gc时可以避免指针追踪带来的递归扫描并使用小对象的更高效扫描策略</p>
+<h3><span id="抢购用户数量超出预期导致微信网关带宽流量超出限制">抢购用户数量超出预期，导致微信网关带宽流量超出限制</span></h3><h5><span id="问题影响">问题影响</span></h5><p>记录一次线上流量激增带来的问题，商品热度高于预期，参与抢购的用户数量比以往高了10倍以上，导致微信网关瞬时流量超过5G，部分用户由于请求不通页面异常无法下单     </p>
+<h5><span id="排查方法">排查方法</span></h5><p>1、从日志服务alb日志和网关日志中根据请求接口的路由进行分组统计，alb和网关日志一般都会记录请求&#x2F;响应的字节大小，根据接口路由统计后捞出 接口的请求次数&#x2F;接口request平均大小&#x2F;接口response平均大小&#x2F;一定时段内总流量大小（一般拉取出问题期间的一分钟的数据即可）<br>2、寻找对照组，将上一次同样售卖爆款的正常场景也同样进行数据统计，比对两场售卖的接口数据差异，找到变化最大的一部分接口，分析其情况是否正常，因为很多流量高峰其实是黑产刷接口导致的，根据业务实际情况判断差异的根因进行解决<br>3、对步骤一的日志按接口总流量大小的占比进行排序，找到占比最大的一批接口，对其进行分类判断（大数据高频率接口&#x2F;小数据高频率接口&#x2F;不常变化的静态属性接口）<br>4、与前端&#x2F;产品配合逐个分析头部接口，结合分类确定优化方向</p>
+<h5><span id="解决方案">解决方案</span></h5><p>一般可根据下面几种情况对接口进行分类来优化：    </p>
+<ul>
+<li>单次接口调用的平均大小（平均请求+平均响应）如果较大的话（例如超过5kb），即属于大数据接口，这种一般是响应数据较大，优化思路为删减字段&#x2F;拆分接口；需要分析前端配合梳理响应字段的使用情况，干掉无用的字段，部分通用的接口会存在几部分模块数据都在一个接口里返回，这种情况下可以根据业务拆解这个接口，单个前端场景只使用需要的字段</li>
+<li>一些短时间数据不会变化的接口，例如spu&#x2F;sku的一些静态属性接口，其实不需要频繁拉取，用户在切换页面时可能会频繁触发调用，这种情况可以考虑前端做缓存或后端配合做304code策略（后端对每次接口响应做hash，将hash值在响应数据中返回，前端缓存同一接口的上次响应和hash，每次调用时在header中传入hash，后端判断到响应数据没有变化时，将http code置为304，这样就不需要返回响应数据，在response比较大的情况下效果会很好）     </li>
+<li>单次接口调用的平均大小比较小的情况，这种一般是因为频率极高导致占用的带宽也很大，优化思路为减少接口调用频率<br>除了针对场景的优化，还有一些通用的优化方法：     </li>
+<li>实行降级策略，后端控制降级开关，在高峰期暂时隐藏部分不重要的功能，较为适用于定时发售抢购的场景，可以大幅降低系统压力</li>
+<li>响应体大的接口如果无法删减字段，可以考虑采用压缩算法对响应体进行压缩，减少传输的带宽占用</li>
+<li>以上优化执行后还是无法得到较好的效果，可以考虑拆分服务集群分开部署，物理上横行扩展分散网关流量</li>
+</ul>
 
     </div>
 
@@ -262,7 +255,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://fuhongbao.github.io/2025/04/10/go%20map%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" title="Go map的一些问题记录">https://fuhongbao.github.io/2025/04/10/go map的一些问题记录/</a>
+      <a href="https://fuhongbao.github.io/2025/04/23/%E6%8A%A2%E8%B4%AD%E9%AB%98%E5%B3%B0%E6%9C%9F%E5%B8%A6%E5%AE%BD%E6%B5%81%E9%87%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" title="抢购高峰期带宽流量的一些问题记录">https://fuhongbao.github.io/2025/04/23/抢购高峰期带宽流量的一些问题记录/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -271,21 +264,18 @@
 </div>
 
           <div class="post-tags">
-              <a href="/tags/go/" rel="tag"># go</a>
+              <a href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/" rel="tag"># 高并发</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2025/03/04/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6casbin/" rel="prev" title="访问控制casbin">
-                  <i class="fa fa-angle-left"></i> 访问控制casbin
+                <a href="/2025/04/10/go%20map%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" rel="prev" title="Go map的一些问题记录">
+                  <i class="fa fa-angle-left"></i> Go map的一些问题记录
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2025/04/23/%E6%8A%A2%E8%B4%AD%E9%AB%98%E5%B3%B0%E6%9C%9F%E5%B8%A6%E5%AE%BD%E6%B5%81%E9%87%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" rel="next" title="抢购高峰期带宽流量的一些问题记录">
-                  抢购高峰期带宽流量的一些问题记录 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>
