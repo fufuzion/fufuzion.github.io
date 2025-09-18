@@ -27,7 +27,7 @@
 <meta property="og:description" content="抢购期间出现服务本地端口资源耗尽的报错问题 问题影响 问题分析 解决方案      抢购期间出现服务本地端口资源耗尽的报错问题问题影响服务高峰期间服务通过rpc请求另一个服务，偶现出现少量下方报错，显示本地端口资源耗尽： 1dial tcp xxx: connect: cannot assign requested address 问题分析1、 观察单机接口的qps量级并不是历史最高，突然出">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-09-18T03:07:38.879Z">
-<meta property="article:modified_time" content="2025-09-18T05:35:48.144Z">
+<meta property="article:modified_time" content="2025-09-18T05:51:12.914Z">
 <meta property="article:author" content="付洪宝Atlas">
 <meta property="article:tag" content="高并发">
 <meta name="twitter:card" content="summary">
@@ -194,7 +194,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2025-09-18 11:07:38 / 修改时间：13:35:48" itemprop="dateCreated datePublished" datetime="2025-09-18T11:07:38+08:00">2025-09-18</time>
+      <time title="创建时间：2025-09-18 11:07:38 / 修改时间：13:51:12" itemprop="dateCreated datePublished" datetime="2025-09-18T11:07:38+08:00">2025-09-18</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -230,7 +230,7 @@
 <h3><span id="抢购期间出现服务本地端口资源耗尽的报错问题">抢购期间出现服务本地端口资源耗尽的报错问题</span></h3><h5><span id="问题影响">问题影响</span></h5><p>服务高峰期间服务通过rpc请求另一个服务，偶现出现少量下方报错，显示本地端口资源耗尽：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dial tcp xxx: connect: cannot assign requested address</span><br></pre></td></tr></table></figure>
 <h5><span id="问题分析">问题分析</span></h5><p>1、 观察单机接口的qps量级并不是历史最高，突然出现这个错误怀疑是环境资源被调整引起，由运维继续追查环境问题端口池配置的范围，这里只关注研发的代码优化<br>2、 检查代码中网络请求逻辑，发现函数中直接使用resty.New()创建大量临时实例，这样导致连接不能被复用，高峰期出现大量tcp time_wait的连接<br>3、 由于代码中都是短连接的交互形式，出现端口资源耗尽可能是下游耗时异常导致的瞬时持有连接数量过高，或者占用的端口回收不及时如TIME_WAIT类的连接，这里完善下游接口的耗时日志，辅助判断问题        </p>
-<h5><span id="解决方案">解决方案</span></h5><p>1、 resty.New()的client实例维护成全局单例<br>2、 设置resty的transport，MaxIdleConns和MaxIdleConnsPerHost属性合理配置连接池，加强复用率<br>3、 调整失败重试的间隔，默认的100ms并不适合这个场景，只会无意义的加重问题，根据业务情况适当延长，分散高峰点附近的请求密度</p>
+<h5><span id="解决方案">解决方案</span></h5><p>1、 resty.New()的client实例维护成全局单例；<br>2、 设置resty的transport，MaxIdleConns和MaxIdleConnsPerHost属性合理配置连接池，加强复用率；<br>同时下游服务端的总连接数也要跟着调整，由于引入了长连接池，上下游扩缩容时连接压力会变化，下游节点需要保护自己；<br>3、 调整失败重试的间隔，默认的100ms并不适合这个场景，只会无意义的加重问题，根据业务情况适当延长，分散高峰点附近的请求密度；</p>
 
     </div>
 
